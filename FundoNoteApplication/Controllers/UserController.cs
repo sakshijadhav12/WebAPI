@@ -1,8 +1,10 @@
 ﻿using CommonLayer.Model;
 using MangerLayer.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RepositoryLayer.Entity;
+using System.Linq;
 
 namespace FundoNoteApplication.Controllers
 {
@@ -46,6 +48,41 @@ namespace FundoNoteApplication.Controllers
             }
 
         }
+        [HttpPost]
+        [Route("forgetPassword")]
+        public IActionResult ForgetPassword(string EmailId)
+        { 
+            var result = this.userBl.ForgetPassword(EmailId); ;
+            if (result != null)
+            {
+                return Ok(new ResponseModel<string> { Status = true, Message = "successfull", Data = result });
+            }
+            else
+            {
+                return BadRequest(new ResponseModel<string> { Status = false, Message = "Not successfull" });
+            }
+
+        }
+        [Authorize]
+        [HttpPost]
+        [Route("resetPassword")]
+        public IActionResult ResetPassword(Resetpass password)
+        {
+            string email = User.Claims.FirstOrDefault(x => x.Type == "Email").Value;
+            var result = this.userBl.ResetPassword(email ,password);
+            if(result != null)
+            {
+                return Ok(new ResponseModel<bool> { Status = true, Message = "successfull", Data = result });
+
+            }
+            else
+            {
+                return BadRequest(new ResponseModel<bool> { Status = false, Message = "Not successfull" });
+            }
+
+
+        }
+
 
     }
 }

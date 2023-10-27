@@ -10,6 +10,8 @@ namespace RepositoryLayer.Interfaces
     {
         public UserEntity UserResgistrations(UserRegstration userResgistration);
         public string Login(UserLogin userLogin);
+        public string ForgetPassword(string EmailId);
+        public bool ResetPassword(string email, Resetpass reset);
 
     }
 }

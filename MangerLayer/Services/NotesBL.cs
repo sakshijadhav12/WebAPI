@@ -1,26 +1,28 @@
 ﻿using CommonLayer.Model;
+using MangerLayer.Interfaces;
 using RepositoryLayer.Entity;
 using RepositoryLayer.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml.Linq;
 
 namespace MangerLayer.Services
 {
-    public class UserBL : IUserBL
+    public class NotesBL : INotesBL
     {
-        private readonly IUserRL userInterface;
-        public UserBL(IUserRL userInterface)
+        private readonly INotesRL userInterface;
+        public NotesBL(INotesRL userInterface)
         {
             this.userInterface = userInterface;
         }
 
-
-        public UserEntity UserRegistration(UserRegstration userRegistration)
+        public NoteEntity AddNote(Notes node, int User_id)
         {
             try
             {
-                return this.userInterface.UserResgistrations(userRegistration);
+                return this.userInterface.AddNote(node, User_id);
+
             }
             catch (Exception)
             {
@@ -28,41 +30,42 @@ namespace MangerLayer.Services
             }
         }
 
-        public string Login(UserLogin userLogin)
+        public List<NoteEntity> DisplayNotes(int user_Id)
         {
             try
             {
-                return this.userInterface.Login(userLogin);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
+                return this.userInterface.DisplayNotes(user_Id);
 
-        public string ForgetPassword(string EmailId)
-        {
-            try
-            {
-                return this.userInterface.ForgetPassword(EmailId);
             }
             catch (Exception)
             {
                 throw;
             }
-        }
 
-        public bool ResetPassword(string email, Resetpass reset)
+        }
+        public NoteEntity updateNotes(Notes node, int User_id)
         {
             try
             {
-                return this.userInterface.ResetPassword(email, reset);
+                return this.userInterface.updateNotes(node, User_id);
+
             }
             catch (Exception)
             {
                 throw;
             }
+
         }
-      
+        public NoteEntity DeleteNote(long NoteId)
+        {
+            try
+            {
+                return this.userInterface.DeleteNote(NoteId);
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
     }
 }

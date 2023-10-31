@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RepositoryLayer.Entity;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace FundoNoteApplication.Controllers
@@ -81,6 +82,36 @@ namespace FundoNoteApplication.Controllers
             }
 
 
+        }
+
+        [HttpPost]
+        [Route("Emailexicts")]
+        public IActionResult EmailExicts(string EmailId)
+        {
+            var result = userBl.EmailExicts(EmailId);
+            if (result!=null)
+            {
+                return Ok(new ResponseModel<UserEntity> { Status = true , Message="Email Exicts",Data = result });
+            }
+            else
+            {
+                return BadRequest(new ResponseModel<UserEntity> { Status = false, Message = "Not Exicts" });
+            }
+        }
+
+        [HttpPost]
+        [Route("printusers")]
+        public IActionResult PrintUsers()
+        {
+            var result = userBl.PrintUsers();
+            if (result != null)
+            {
+                return Ok(new ResponseModel<List<UserEntity>> { Status = true, Message = "successfull", Data = result });
+            }
+            else
+            {
+                return BadRequest(new ResponseModel<List<UserEntity>>{ Status = false, Message = "Not successfull" });
+            }
         }
 
 

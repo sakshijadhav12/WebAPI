@@ -63,6 +63,30 @@ namespace MangerLayer.Services
                 throw;
             }
         }
-      
+
+        public UserEntity EmailExicts(string EmailId)
+        {
+            try
+            {
+                return this.userInterface.EmailExicts(EmailId);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public List<UserEntity> PrintUsers()
+        {
+            try
+            {
+               return this.userInterface.PrintUsers();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+
     }
 }

@@ -12,6 +12,7 @@ namespace RepositoryLayer.Interfaces
         public string Login(UserLogin userLogin);
         public string ForgetPassword(string EmailId);
         public bool ResetPassword(string email, Resetpass reset);
-
+        public UserEntity EmailExicts(string EmailId);
+        public List<UserEntity> PrintUsers();
     }
 }

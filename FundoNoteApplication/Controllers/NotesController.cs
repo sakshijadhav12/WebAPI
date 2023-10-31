@@ -118,14 +118,178 @@ namespace FundoNoteApplication.Controllers
                     return BadRequest(new ResponseModel<NoteEntity> { Status = false, Message = "Not successfull" });
                 }
             }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        [Authorize]
+        [HttpPost]
+        [Route("Isarchive")]
+        public IActionResult Archive(int User_id, long NoteId)
+        {
+            try
+            {
+                int User_Id = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "User_Id").Value);
+                var result = notesBl.Archive(User_Id, NoteId);
+                if (result != null)
+                {
+                    return Ok(new ResponseModel<bool> { Status = true, Message = " successfull", Data = result });
+                }
+                else
+                {
+                    return BadRequest(new ResponseModel<NoteEntity> { Status = false, Message = "Not successfull" });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+        [Authorize]
+        [HttpPost]
+        [Route("IsPin")]
+        public IActionResult PinNote(int User_id, long NoteId)
+        {
+            try
+            {
+                int User_Id = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "User_Id").Value);
+                var result = notesBl.Archive(User_Id, NoteId);
+                if (result != null)
+                {
+                    return Ok(new ResponseModel<bool> { Status = true, Message = " successfull", Data = result });
+                }
+                else
+                {
+                    return BadRequest(new ResponseModel<NoteEntity> { Status = false, Message = "Not successfull" });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+        }
+        [Authorize]
+        [HttpPost]
+        [Route("Istrash")]
+        public IActionResult TrashNote(int User_id, long NoteId)
+        {
+            try
+            {
+                int User_Id = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "User_Id").Value);
+                var result = notesBl.Archive(User_Id, NoteId);
+                if (result != null)
+                {
+                    return Ok(new ResponseModel<bool> { Status = true, Message = " successfull", Data = result });
+                }
+                else
+                {
+                    return BadRequest(new ResponseModel<NoteEntity> { Status = false, Message = "Not successfull" });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+
+        }
+        [Authorize]
+        [HttpPost]
+        [Route("removeForever")]
+        public IActionResult  DeleteForever( long NoteId)
+        {
+            try
+            {
+                int User_Id = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "User_Id").Value);
+                var result =notesBl.DeleteForever(User_Id, NoteId);
+                if(result != null)
+                {
+                    return Ok(new ResponseModel<bool> { Status = true, Message = "remove successfully", Data = result });
+                }
+                else
+                {
+                    return BadRequest(new ResponseModel<bool> { Status=false,Message="note is not deleted"});
+                }
+
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }
+        }
+        [Authorize]
+        [HttpPost]
+        [Route("changecolor")]
+        public IActionResult ChangeColor( long NoteId, string colour)
+        {
+            int User_Id = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "User_Id").Value);
+            var result = notesBl.ChangeColor(User_Id, NoteId, colour);
+            if(result != null)
+            {
+                return Ok(new ResponseModel<NoteEntity> { Status=true,Message="Color is changed",Data=result});
+            }
+            else
+            {
+                return BadRequest(new ResponseModel<NoteEntity> { Status = false, Message = " color is not Changed" });
+            }
+                
+        }
+        [Authorize]
+        [HttpPost]
+        [Route("Reminder")]
+        public IActionResult Remainder( long NoteId, DateTime reminder)
+        {
+            try
+            {
+                int User_Id = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "User_Id").Value);
+                var result = notesBl.Remainder(User_Id,NoteId, reminder);
+                if(result!= null)
+                {
+                    return Ok(new ResponseModel<NoteEntity> { Status = true, Message = "successfull", Data = result });
+                }
+                else
+                {
+                    return BadRequest(new ResponseModel<NoteEntity> { Status = false, Message = "not successfull" });
+                }
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }
+
+        }
+        [Authorize]
+        [HttpPost]
+        [Route("Uploadimg")]
+        public IActionResult UploadImage( long NoteId, IFormFile img)
+        {
+            try
+            {
+                int User_Id = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "User_Id").Value);
+                var result = notesBl.UploadImage(User_Id, NoteId,img);
+                if (result != null)
+                {
+                    return Ok(new ResponseModel<string> { Status = true, Message = "successfullu uploaded image", Data = result });
+                }
+                else
+                {
+                    return BadRequest(new ResponseModel<string> { Status = false, Message = "image is not uploaded" });
+                }
+            }
             catch(Exception ex)
             {
                 throw;
             }
         }
 
-
     }
+   
 }
 
             

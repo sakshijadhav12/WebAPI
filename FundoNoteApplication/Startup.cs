@@ -56,7 +56,7 @@ namespace FundoNoteApplication
                 };
             });
 
-            //services.AddSingleton<IJWTManagerRepository, JWTManagerRepository>();
+          
 
 
             services.AddControllers();
@@ -64,6 +64,9 @@ namespace FundoNoteApplication
             services.AddTransient<IUserBL, UserBL>();
             services.AddTransient<INotesRL, NotesRL>();
             services.AddTransient<INotesBL, NotesBL>();
+            services.AddTransient<ILabelBL, LabelBL>();
+            services.AddTransient<ILabelRL, LabelRL>();
+
 
             services.AddDbContext<FundoDbContext>(x => x.UseSqlServer(Configuration["ConnectionString:FundooDB"]));
 

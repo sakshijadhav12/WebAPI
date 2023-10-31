@@ -13,6 +13,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using RepositoryLayer.Migrations;
 using System.Security.Cryptography.X509Certificates;
+using System.Text.RegularExpressions;
 
 namespace RepositoryLayer.Services
 {
@@ -68,6 +69,18 @@ namespace RepositoryLayer.Services
             else
             {
                 return null;
+            }
+        }
+        public UserEntity EmailExicts(string EmailId)
+        {
+            try
+            {
+                var EmailExict = fundoDbContext.User.FirstOrDefault(x => x.EmailId == EmailId);
+                return EmailExict;
+            }
+            catch(Exception ex)
+            {
+                throw;
             }
         }
         public string EncryptPass(string password)
@@ -153,7 +166,19 @@ namespace RepositoryLayer.Services
 
         }
 
+        public List<UserEntity> PrintUsers()
+        {
+            try
+            {
+                List<UserEntity> result = (List<UserEntity>)fundoDbContext.User.ToList();
+                return result;
 
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
 
 
     }

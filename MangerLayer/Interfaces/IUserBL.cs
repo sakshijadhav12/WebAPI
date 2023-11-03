@@ -1,10 +1,12 @@
 ﻿using CommonLayer.Model;
 using RepositoryLayer.Entity;
+using System;
 using System.Collections.Generic;
+using System.Text;
 
-namespace MangerLayer.Services
+namespace MangerLayer.Interfaces
 {
-    public interface IUserBL
+   public interface IUserBL
     {
         UserEntity UserRegistration(UserRegstration userRegistration);
         public string Login(UserLogin userLogin);
@@ -12,5 +14,6 @@ namespace MangerLayer.Services
         public bool ResetPassword(string email, Resetpass reset);
         public UserEntity EmailExicts(string EmailId);
         public List<UserEntity> PrintUsers();
+        public UserEntity LoginSession(UserLogin userLogin);
     }
 }

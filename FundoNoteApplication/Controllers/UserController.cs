@@ -1,8 +1,10 @@
 ﻿using CommonLayer.Model;
+using MangerLayer.Interfaces;
 using MangerLayer.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using RepositoryLayer.Entity;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,23 +16,28 @@ namespace FundoNoteApplication.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserBL userBl;
+        private readonly ILogger<UserController> logger;
 
-        public UserController(IUserBL userBl)
+        public UserController(IUserBL userBl ,ILogger<UserController> logger)
         {
             this.userBl = userBl;
+            this.logger = logger;
         }
         [HttpPost]
         [Route("register")]
         //httplocalhost/api/User/register
         public IActionResult Registration(UserRegstration userRegstration)
         {
+            logger.LogInformation("Registration Started");
             var result = this.userBl.UserRegistration(userRegstration);
             if (result != null)
             {
+                logger.LogInformation("Registration Successfull");
                 return Ok(new ResponseModel<UserEntity> { Status = true, Message = "Register successfull", Data = result });
             }
             else
             {
+                logger.LogError("registration is not done successfully");
                 return BadRequest(new ResponseModel<UserEntity> { Status = false, Message = "Not successfull" });
             }
 
@@ -114,6 +121,25 @@ namespace FundoNoteApplication.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("Session Login")]
+        public IActionResult SessionLogin(UserLogin userLogin)
+        {
+           
+            var result = this.userBl.LoginSession(userLogin);
+            HttpContext.Session.SetInt32("UserID", result.User_Id);
+
+            if (result != null)
+            {
+                return Ok(new ResponseModel<UserEntity> { Status = true, Message = "login successfull", Data = result });
+            }
+            else
+            {
+                return BadRequest(new ResponseModel<UserEntity> { Status = false, Message = "Not successfull" });
+            }
+
+        }
+    }
+
 
     }
-}

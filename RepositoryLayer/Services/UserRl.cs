@@ -71,6 +71,28 @@ namespace RepositoryLayer.Services
                 return null;
             }
         }
+        public UserEntity LoginSession(UserLogin userLogin)
+        {
+            try
+            {
+                var encodePass = EncryptPass(userLogin.Password);
+                var result = fundoDbContext.User.FirstOrDefault(x => x.EmailId == userLogin.EmailId && x.Password == encodePass);
+                if (result != null)
+                {
+                    return result;
+
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }
+        }
+
         public UserEntity EmailExicts(string EmailId)
         {
             try
@@ -179,7 +201,8 @@ namespace RepositoryLayer.Services
                 throw;
             }
         }
-
+       
 
     }
 }
+

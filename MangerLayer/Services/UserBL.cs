@@ -1,4 +1,5 @@
 ﻿using CommonLayer.Model;
+using MangerLayer.Interfaces;
 using RepositoryLayer.Entity;
 using RepositoryLayer.Interfaces;
 using System;
@@ -82,6 +83,17 @@ namespace MangerLayer.Services
                return this.userInterface.PrintUsers();
             }
             catch (Exception ex)
+            {
+                throw;
+            }
+        }
+        public UserEntity LoginSession(UserLogin userLogin)
+        {
+            try
+            {
+                return this.userInterface.LoginSession(userLogin);
+            }
+            catch(Exception ex)
             {
                 throw;
             }

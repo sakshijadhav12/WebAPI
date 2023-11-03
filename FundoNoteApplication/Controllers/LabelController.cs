@@ -26,12 +26,12 @@ namespace FundoNoteApplication.Controllers
         [Authorize]
         [HttpPost]
         [Route("AddLabel")]
-        public IActionResult AddLabel(int user_Id, long NoteId, string label)
+        public IActionResult AddLabel( long NoteId, string label)
         {
             try
             {
                 int User_Id = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "User_Id").Value);
-                var result = labelBL.AddLabel(user_Id, NoteId, label);
+                var result = labelBL.AddLabel(User_Id, NoteId, label);
                 if (result != null)
                 {
                     return Ok(new ResponseModel<LabelEntity> { Status = true, Message = "Label is added successfully", Data = result });

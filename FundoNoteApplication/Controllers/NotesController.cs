@@ -4,11 +4,18 @@ using MangerLayer.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using NLog;
 using RepositoryLayer.Entity;
 using RepositoryLayer.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using System.Text;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace FundoNoteApplication.Controllers
@@ -18,20 +25,27 @@ namespace FundoNoteApplication.Controllers
     public class NotesController : ControllerBase
     {
         private readonly INotesBL notesBl;
+        private readonly ILogger<UserController> logger;
+        private readonly IDistributedCache distributedCache;
 
-        public NotesController(INotesBL notesBl)
+
+        public NotesController(INotesBL notesBl , ILogger<UserController> logger , IDistributedCache distributedCache)
         {
             this.notesBl = notesBl;
+            this.logger = logger;
+            this.distributedCache = distributedCache;
+
         }
-        [Authorize]
+        //[Authorize]
         [HttpPost]
         [Route("add_note")]
         public IActionResult AddNotes(Notes notes)
         {
             try
             {
-                int User_Id = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "User_Id").Value);
-                var result = notesBl.AddNote(notes, User_Id);
+                //  int User_Id = Convert.ToInt32(User.Claims.FirstOrDefault(x => x.Type == "User_Id").Value);
+                int User_ID = (int)HttpContext.Session.GetInt32("UserID");
+                var result = notesBl.AddNote(notes, User_ID);
                 if (result != null)
                 {
                     return Ok(new ResponseModel<NoteEntity> { Status = true, Message = "note is added successfully", Data = result });
@@ -287,10 +301,50 @@ namespace FundoNoteApplication.Controllers
                 throw;
             }
         }
+        [HttpGet]
+        [Route("GetAllnotesusingredis")]
+        public async Task<IActionResult> GetALLNotesUsingRedis(int user_Id)
+        {
+            try {
+                var CacheKey = "NotesList";
+                //styring SerializedNotesList
+                List<NoteEntity> NoteList = new List<NoteEntity>();
+                byte[] RedisNoteList = await distributedCache.GetAsync(CacheKey);// for getting datA FROM CACHE
+                if (RedisNoteList != null)
+                {
+                    logger.LogDebug("setting the list to cache which is requested for the first time");
+                    var SerializedNoteList = Encoding.UTF8.GetString(RedisNoteList);
+                    NoteList = JsonConvert.DeserializeObject<List<NoteEntity>>(SerializedNoteList);
+
+                }
+                else
+                {
+                    logger.LogDebug("setting a list to cache which is requested for the first time");
+                    NoteList= (List<NoteEntity>)notesBl.DisplayNotes(user_Id);
+                    var SeralizedNoteList = JsonConvert.SerializeObject(NoteList);
+                    var redisNoteList = Encoding.UTF8.GetBytes(SeralizedNoteList);
+                    var options = new DistributedCacheEntryOptions().SetAbsoluteExpiration(DateTime.Now.AddMinutes(10)).SetSlidingExpiration(TimeSpan.FromMinutes(5));
+                    await distributedCache.SetAsync(CacheKey, redisNoteList, options);
+
+                }
+                logger.LogInformation("got all notes list successfully from redis");
+                return Ok(NoteList);
+
+            }
+            catch(Exception ex) 
+            {
+                logger.LogCritical(ex, "exception thrown.. ");
+                return BadRequest(new ResponseModel<NoteEntity> { Status = false, Message = ex.Message } );
+            }
+
+
+ }
+        }
+
 
     }
    
-}
+
 
             
        

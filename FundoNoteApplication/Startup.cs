@@ -56,8 +56,7 @@ namespace FundoNoteApplication
                 };
             });
 
-          
-
+            
 
             services.AddControllers();
             services.AddTransient<IUserRL, UserRl>();
@@ -66,11 +65,25 @@ namespace FundoNoteApplication
             services.AddTransient<INotesBL, NotesBL>();
             services.AddTransient<ILabelBL, LabelBL>();
             services.AddTransient<ILabelRL, LabelRL>();
-
+            services.AddTransient<ICollaboratorRL, CollaboratorRL>();
+            services.AddTransient<ICollaboratorBL, CollaboratorBL>();
+            
 
             services.AddDbContext<FundoDbContext>(x => x.UseSqlServer(Configuration["ConnectionString:FundooDB"]));
-
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(120);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+            services.AddMemoryCache();
+            services.AddDistributedMemoryCache();
+            services.AddControllers(); services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = "localhost:6379";
+            });
             services.AddSwaggerGen(option =>
+
             {
                 option.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo API", Version = "v1" });
                 option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -82,6 +95,8 @@ namespace FundoNoteApplication
                     BearerFormat = "JWT",
                     Scheme = "Bearer"
                 });
+
+
                 option.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -93,12 +108,21 @@ namespace FundoNoteApplication
                     Id="Bearer"
                 }
             },
+
             new string[]{}
+
+
+
+
         }
+
+
+
     });
-   });
 
-
+                
+            });
+            
         }
             
 
@@ -110,7 +134,7 @@ namespace FundoNoteApplication
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Employee API V1");
             });
-
+            app.UseSession();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -127,8 +151,10 @@ namespace FundoNoteApplication
             {
                 endpoints.MapControllers();
             });
-
+            
 
         }
+
+        
     }
 }

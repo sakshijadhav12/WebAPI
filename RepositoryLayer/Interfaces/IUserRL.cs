@@ -14,5 +14,6 @@ namespace RepositoryLayer.Interfaces
         public bool ResetPassword(string email, Resetpass reset);
         public UserEntity EmailExicts(string EmailId);
         public List<UserEntity> PrintUsers();
+        public UserEntity LoginSession(UserLogin userLogin);
     }
 }

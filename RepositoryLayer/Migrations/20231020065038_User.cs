@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
+using System;
 
 namespace RepositoryLayer.Migrations
 {
@@ -16,6 +17,7 @@ namespace RepositoryLayer.Migrations
                     LastName = table.Column<string>(nullable: true),
                     EmailId = table.Column<string>(nullable: true),
                     Password = table.Column<string>(nullable: true)
+                   
                 },
                 constraints: table =>
                 {
